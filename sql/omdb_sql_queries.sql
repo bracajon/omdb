@@ -5,9 +5,9 @@ SELECT movies.movie_id,
        native_name,
        movie_trivia_id,
        movie_trivia_name
-FROM   movies
+FROM movies
        LEFT OUTER JOIN movie_trivia
-                    ON movies.movie_id = movie_trivia.movie_id
+       ON movies.movie_id = movie_trivia.movie_id
 
 
 
@@ -18,9 +18,9 @@ SELECT movies.movie_id,
        native_name,
        movie_quote_id,
        movie_quote_name
-FROM   movies
+FROM movies
        LEFT OUTER JOIN movie_quotes
-                    ON movies.movie_id = movie_quotes.movie_id
+       ON movies.movie_id = movie_quotes.movie_id
 
 
 
@@ -33,10 +33,11 @@ SELECT movies.movie_id,
        movie_media_id,
        m_link,
        m_link_type
-FROM   movies
+FROM movies
        LEFT OUTER JOIN movie_media
-                    ON movies.movie_id = movie_media.movie_id
-ORDER BY `movies`.`movie_id` ASC
+       ON movies.movie_id = movie_media.movie_id
+ORDER BY `movies`.`movie_id
+` ASC
 
 
 
@@ -51,16 +52,17 @@ SELECT movies.movie_id,
        first_name,
        last_name,
        screen_name
-FROM   movies
+FROM movies
        LEFT OUTER JOIN movie_people
-                    ON movies.movie_id = movie_people.movie_id
+       ON movies.movie_id = movie_people.movie_id
        LEFT OUTER JOIN people
-       				ON people.people_id = movie_people.people_id
+       ON people.people_id = movie_people.people_id
 
 
 --  Ryan,
 -- Query 5) Get the list of all people in the database
-SELECT * FROM people
+SELECT *
+FROM people
 
 
 
@@ -68,7 +70,7 @@ SELECT * FROM people
 -- Query 6) Get the list of all people in the database. And also show their association with the movies along with the “role” and “screen_name”.
 
 SELECT movies.movie_id,
-	   native_name,
+       native_name,
        movie_people.people_id,
        stage_name,
        role,
@@ -78,11 +80,11 @@ SELECT movies.movie_id,
        gender,
        image_name,
        screen_name
-FROM   movies
+FROM movies
        LEFT OUTER JOIN movie_people
-                    ON movies.movie_id = movie_people.movie_id
+       ON movies.movie_id = movie_people.movie_id
        LEFT OUTER JOIN people
-       				ON people.people_id = movie_people.people_id
+       ON people.people_id = movie_people.people_id
 
 
 
@@ -99,84 +101,91 @@ SELECT movies.movie_id,
        genre,
        plot,
        (SELECT COUNT(movie_trivia_id)
-        FROM movie_trivia
-        WHERE movies.movie_id = movie_trivia.movie_id) AS movie_trivia_count,
+       FROM movie_trivia
+       WHERE movies.movie_id = movie_trivia.movie_id) AS movie_trivia_count,
        (SELECT COUNT(keyword)
-        FROM movie_keywords
-        WHERE movies.movie_id = movie_keywords.movie_id) AS movie_keyword_count,
-        (SELECT COUNT(movie_media_id)
-         FROM movie_media
-         WHERE movies.movie_id = movie_media.movie_id) AS movie_media_count,
-        (SELECT COUNT(song_id)
-         FROM movie_song
-         WHERE movies.movie_id = movie_song.movie_id) AS movies_song_count,
-        (SELECT COUNT(people_id)
-         FROM movie_people
-         WHERE movies.movie_id = movie_people.movie_id) movie_people_count
+       FROM movie_keywords
+       WHERE movies.movie_id = movie_keywords.movie_id) AS movie_keyword_count,
+       (SELECT COUNT(movie_media_id)
+       FROM movie_media
+       WHERE movies.movie_id = movie_media.movie_id) AS movie_media_count,
+       (SELECT COUNT(song_id)
+       FROM movie_song
+       WHERE movies.movie_id = movie_song.movie_id) AS movies_song_count,
+       (SELECT COUNT(people_id)
+       FROM movie_people
+       WHERE movies.movie_id = movie_people.movie_id) movie_people_count
 
-FROM   movies
+FROM movies
        LEFT OUTER JOIN movie_data
-                    ON movies.movie_id = movie_data.movie_id
+       ON movies.movie_id = movie_data.movie_id
 
 
 --7.40 Mel
 SELECT
-    people.stage_name,
-    song_people.people_id,
-    COUNT(*)
+       people.stage_name,
+       song_people.people_id,
+       COUNT(*)
 FROM
-    song_people
-JOIN people WHERE people.people_id = song_people.people_id
+       song_people
+       JOIN people 
+WHERE people.people_id = song_people.people_id
 GROUP BY
     people_id
 
 
 -- 7.40 Alternative
-SELECT   stage_name, 
-         Count(song_id) AS song_count 
-FROM     song_people 
-JOIN     people 
-WHERE    people.people_id = song_people.people_id 
+SELECT stage_name,
+       Count(song_id) AS song_count
+FROM song_people
+       JOIN people 
+WHERE    people.people_id = song_people.people_id
 GROUP BY song_people.people_id
 
+-- 7.41 Jonathan
+
+SELECT DISTINCT song_id, title
+FROM songs
+WHERE substring(title, 1, 2) = 'op'
 
 -- 7.70 JED
-SELECT (SELECT Count(native_name) 
-        FROM   movies) AS movie_count, 
-        (SELECT Count(anagram)
-        FROM movie_anagrams) AS anagram_count,
-        (SELECT Count(movie_id)
-        FROM movie_data) AS data_count,
-        (SELECT Count(keyword)
-        FROM movie_keywords) AS keyword_count,
-        (SELECT Count(movie_media_id)
-        FROM movie_media) AS movie_media_count,
-        (SELECT Count(movie_id)
-        FROM movie_numbers) AS movie_numbers_count,
-        (SELECT Count(people_id)
-        FROM movie_people) AS movie_people_count,
-        (SELECT Count(movie_quote_id)
-        FROM movie_quotes) AS movie_quote_count,
-        (SELECT Count(song_id)
-        FROM movie_song) AS movie_song_count,
-        (SELECT Count(movie_trivia_id)
-        FROM movie_trivia) AS movie_trivia_count,
-        (SELECT Count(stage_name) 
-        FROM   people) AS people_count, 
-        (SELECT Count(people_trivia_id)
-        FROM people_trivia) AS people_trivia_count,
-        (SELECT Count(title) 
-        FROM   songs)  AS songs_count,
-        (SELECT Count(keyword)
-        FROM song_keywords) AS song_keywords_count,
-        (SELECT Count(song_media_id)
-        FROM song_media) AS song_media_count,
-        (SELECT Count(song_id)
-        FROM song_people) AS song_people_count,
-        (SELECT Count(song_trivia_id)
-        FROM song_trivia) AS song_trivia_count
+SELECT (SELECT Count(native_name)
+       FROM movies) AS movie_count,
+       (SELECT Count(anagram)
+       FROM movie_anagrams) AS anagram_count,
+       (SELECT Count(movie_id)
+       FROM movie_data) AS data_count,
+       (SELECT Count(keyword)
+       FROM movie_keywords) AS keyword_count,
+       (SELECT Count(movie_media_id)
+       FROM movie_media) AS movie_media_count,
+       (SELECT Count(movie_id)
+       FROM movie_numbers) AS movie_numbers_count,
+       (SELECT Count(people_id)
+       FROM movie_people) AS movie_people_count,
+       (SELECT Count(movie_quote_id)
+       FROM movie_quotes) AS movie_quote_count,
+       (SELECT Count(song_id)
+       FROM movie_song) AS movie_song_count,
+       (SELECT Count(movie_trivia_id)
+       FROM movie_trivia) AS movie_trivia_count,
+       (SELECT Count(stage_name)
+       FROM people) AS people_count,
+       (SELECT Count(people_trivia_id)
+       FROM people_trivia) AS people_trivia_count,
+       (SELECT Count(title)
+       FROM songs)  AS songs_count,
+       (SELECT Count(keyword)
+       FROM song_keywords) AS song_keywords_count,
+       (SELECT Count(song_media_id)
+       FROM song_media) AS song_media_count,
+       (SELECT Count(song_id)
+       FROM song_people) AS song_people_count,
+       (SELECT Count(song_trivia_id)
+       FROM song_trivia) AS song_trivia_count
 
-FROM   movies 
-LIMIT  1 
+FROM movies 
+LIMIT
+1 
 
 
